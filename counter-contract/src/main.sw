@@ -16,11 +16,13 @@ storage {
 //import it into your contract because this allows callers of the contract to 
 //import and use the ABI in scripts to call your contract.
 abi Counter {
+    #[storage(write)]
+    fn init(value: u64) -> u64;
     // #[storage(read, write)] is an annotation which denotes that this function 
     // has permission to read and write values in storage.
     #[storage(read, write)]
     // We're introducing the functionality to increment and denoting it shouldn't return any value.
-    fn increment();
+    fn increment(amount: u64) -> u64;
 
     // #[storage(read)] is an annotation which denotes that this function 
     // has permission to read values in storage.
@@ -36,7 +38,14 @@ impl Counter for Contract {
     }
 
     #[storage(read, write)]
-    fn increment() {
-        storage.counter = storage.counter + 1
+    fn increment(amount: u64) -> u64 {
+        let incremented = storage.counter + amount;
+        storage.counter = incremented;
+        incremented
+    }
+    #[storage(write)]
+    fn init(value: u64) -> u64 {
+        storage.counter = value;
+        value
     }
 }

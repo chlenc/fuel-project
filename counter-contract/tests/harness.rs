@@ -1,9 +1,9 @@
 use fuels::{prelude::*, tx::ContractId};
 
 // Load abi from json
-abigen!(MyContract, "out/debug/counter-contract-abi.json");
+abigen!(Counter, "out/debug/counter-contract-abi.json");
 
-async fn get_contract_instance() -> (MyContract, ContractId) {
+async fn get_contract_instance() -> (Counter, ContractId) {
     // Launch a local network and deploy the contract
     let mut wallets = launch_custom_provider_and_get_wallets(
         WalletsConfig::new(
@@ -28,16 +28,19 @@ async fn get_contract_instance() -> (MyContract, ContractId) {
     .await
     .unwrap();
 
-    let instance = MyContract::new(id.clone(), wallet);
+    let instance = Counter::new(id.clone(), wallet);
 
     (instance, id.into())
 }
 
 #[tokio::test]
-async fn can_get_contract_id() {
+async fn initialize_and_increment() {
     let (instance, _id) = get_contract_instance().await;
-    let _result = instance.methods().increment().call().await.unwrap();
+    let init_result = instance.methods().init(1).call().await.unwrap();
+    println!("0️⃣ Init result: {}",init_result.value);
+    let increment_result = instance.methods().increment(1).call().await.unwrap();
+    println!("1️⃣ Increment result: {}",increment_result.value);
     let result = instance.methods().count().call().await.unwrap();
-    println!("✅{}",result.value);
-    assert_eq!(result.value, 1);
+    println!("✅ Count: {}",result.value);
+    assert_eq!(result.value, 2);
 }
