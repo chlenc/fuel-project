@@ -34,7 +34,7 @@ abi Counter {
 impl Counter for Contract {
     #[storage(read)]
     fn count() -> u64 {
-        return storage.counter
+        storage.counter
     }
 
     #[storage(read, write)]
