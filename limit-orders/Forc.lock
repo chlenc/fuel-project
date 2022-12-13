@@ -3,7 +3,7 @@ name = 'core'
 source = 'path+from-root-AE2967028D5567DA'
 
 [[package]]
-name = 'counter-contract'
+name = 'limit-orders'
 source = 'member'
 dependencies = ['std']
 
